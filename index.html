@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>魔塔</title>
+	<meta charset="utf-8" />
+	<style type="text/css">
+		*{
+			padding:0;
+			margin: 0 auto;
+			color:#fff;
+			text-align: center;
+		}
+		.box{
+			/*每个32px大小*/
+			width:650px;
+			height:450px;
+			border:1px solid orange;
+			margin-top: 10%;
+			background: url(imgs/bg.jpg);
+			position: relative;
+		}
+		#info{
+			position: absolute;
+			z-index: 10;
+			width: 70%;
+			height: 30px;
+			font-size: 24px;
+			text-align: center;
+			font-weight: bold;
+			color: black;
+			letter-spacing: 6px;
+
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+		}
+		.status{
+			width:148px;
+			height:352px;
+			float: left;
+			margin-top: 50px;
+			margin-left: 50px;
+		}
+		.mydata{
+			width:100%;
+			height:37%;
+			border:2px solid orange;
+			background: url(imgs/wall.jpg);
+		}
+		.mykeys{
+			margin-top: 15px;
+			width:100%;
+			height:31%;
+			border:2px solid orange;
+			background: url(imgs/wall.jpg);
+		}
+		.ykey{
+			display: inline-block;
+			width:32px;
+			height:32px;
+			background: url(imgs/keys.png) no-repeat 0 0;
+		}
+		.bkey{
+			display: inline-block;
+			width:32px;
+			height:32px;
+			background: url(imgs/keys.png) no-repeat -32px 0;
+		}
+		.rkey{
+			display: inline-block;
+			width:32px;
+			height:32px;
+			background: url(imgs/keys.png) no-repeat -64px 0;
+		}
+		.stairs{
+			width:100%;
+			height:6%;
+			border:2px solid orange;
+			text-align: center;
+			background: url(imgs/wall.jpg);
+		}
+		.help{
+			margin-top: 15px;
+			width:100%;
+			height:13%;
+			border:2px solid orange;
+			background: url(imgs/wall.jpg);
+		}
+
+		.game{
+			width:352px;
+			height:352px;
+			background: url(imgs/wall.jpg);
+			float: right;
+			margin-top: 50px;
+			margin-right: 50px;
+		}
+		.game div{
+			width:32px;
+			height:32px;
+			float: left;
+		}
+		.game .x{
+			background: url(imgs/walls.png) no-repeat -32px 0;
+		}
+		/*英雄*/
+		.game .h{
+			background: url(imgs/hero.png) no-repeat 0 0;
+		}
+		/*楼梯*/
+		.game .n{
+			background: url(imgs/next.jpg) no-repeat 0 0;
+		}
+		.game .p{
+			background: url(imgs/prev.jpg) no-repeat 0 0;
+		}
+		/*门*/
+		.game .yd{
+			background: url(imgs/doors.png) no-repeat 0 0;
+		}
+		.game .bd{
+			background: url(imgs/doors.png) no-repeat -32px 0;
+		}
+		.game .rd{
+			background: url(imgs/doors.png) no-repeat -64px 0;
+		}
+
+
+		/*补给类*/
+		.game .r{
+			background: url(imgs/bloods.png) no-repeat 0 -32px;
+		}
+		.game .b{
+			background: url(imgs/bloods.png) no-repeat -32px -32px;
+		}
+		.game .a{
+			background: url(imgs/bloods.png) no-repeat 0 0;
+		}
+		.game .d{
+			background: url(imgs/bloods.png) no-repeat -32px 0;
+		}
+		.game .yk{
+			background: url(imgs/keys.png) no-repeat 0 0;
+		}
+		.game .bk{
+			background: url(imgs/keys.png) no-repeat -32px 0;
+		}
+		.game .rk{
+			background: url(imgs/keys.png) no-repeat -64px 0;
+		}
+
+
+		/*怪物类*/
+		.game .m0{
+			background: url(imgs/1.png) no-repeat 0 0;
+		}
+		.game .m1{
+			background: url(imgs/2.png) no-repeat 0 -32px;
+		}
+		.game .m2{
+			background: url(imgs/3.png) no-repeat 0 -64px;
+		}
+		.game .m3{
+			background: url(imgs/4.png) no-repeat 0 -96px;
+		}
+		.game .m4{
+			background: url(imgs/5.png) no-repeat 0 0;
+		}
+		.game .m5{
+			background: url(imgs/6.png) no-repeat 0 -32px;
+		}
+		.game .m6{
+			background: url(imgs/7.png) no-repeat 0 -64px;
+		}
+		.game .m7{
+			background: url(imgs/8.png) no-repeat 0 -96px;
+		}
+
+
+	</style>
+</head>
+<body>
+	<div class="box">
+		<div class="status">
+			<div class="mydata">
+				<p>勇士：<span id="level">1</span>级</p>
+				<p>生命：<span id="blood">1000</span></p>
+				<p>攻击：<span id="attack">10</span></p>
+				<p>防御：<span id="defense">10</span></p>
+				<p>金币：<span id="gold">0</span></p>
+				<p>经验：<span id="exp">0</span></p>
+			</div>
+			<div class="mykeys">
+				<p><span class="ykey"></span><span id="ykey">1</span>个</p>
+				<p><span class="bkey"></span><span id="bkey">1</span>个</p>
+				<p><span class="rkey"></span><span id="rkey">1</span>个</p>
+			</div>
+			<div class="stairs">第<span id="stairs">0</span>层</div>
+			<div class="help">
+				<span> S 保存</span>&nbsp;&nbsp;<span>Q 退出程序</span><br />
+				<span> A 读取</span>&nbsp;&nbsp;<span>R 重新开始</span>
+			</div>
+		</div>
+		<div class="game" id="game"></div>
+		<p id="info"></p>
+	</div>
+
+	<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+	<script type="text/javascript">
+		let temp = 11;		//默认朝向下
+		let bIndex = 0;		//默认第一张图片
+		let isGameOver;
+
+		//定义地图
+		let maps=[
+			[
+				"p"," ","yk","0","1","0"," "," "," "," "," ",
+				"x","x","x","x","x","x","x","x","x","x"," ",
+				"r"," ","3","yd"," ","x","r","yk","r","x"," ",
+				"yk","3","a","x"," ","x","r","yk","r","x"," ",
+				"x","yd","x","x"," ","x","x","x","4","x"," ",
+				"yk","6"," ","x"," ","yd","5","0","2","x"," ",
+				"d"," ","bk","x"," ","x","x","x","x","x"," ",
+				"x","yd","x","x"," "," "," "," "," "," "," ",
+				" ","6"," ","x","x"," ","x","x","x","yd","x",
+				"r","b","yk","x"," ","h"," ","x","yk","7","yk",
+				"r","b","yk","x"," "," "," ","x","yk","yk","bk"
+			],
+			[
+				"n","x"," ","0","1","0"," "," "," "," "," ",
+				"h","x","x","x","x","x","x","x","x","x","a",
+				" ","x","3","x","a","x","r"," ","r","x","a",
+				" ","x","a"," ","a","x","r"," ","r","x","a",
+				" ","x","x","x"," ","x","x","x","4","x"," ",
+				" ","rd"," ","x"," "," ","5","0","2","x"," ",
+				" ","x"," "," "," ","x","x","x","x","x"," ",
+				" ","x","3","x"," "," ","d"," "," "," ","d",
+				" ","x","a","x","x","d","x","x","x","d","x",
+				" ","x","a","x","b","r","b","x","d","7"," ",
+				"p","x","a","x","b","r","b","x"," "," "," "
+			],
+			[
+				"a","x"," ","x","s","x"," "," "," "," "," ",
+				"a","x","x","x","a","x"," "," ","x","x","a",
+				"2","x","3","x","a","x","r"," ","r","x","a",
+				" ","x","a","x","a","x","r"," ","r","x","a",
+				" ","x","x","x"," ","x","x","x","4","x"," ",
+				"2","6"," ","x"," "," ","5","0","2","x"," ",
+				"a","x"," "," "," ","x","x","x","x","x"," ",
+				"a","x","3","x"," "," ","d"," "," "," ","d",
+				"x","x","a","x","x","d","x","x","x","d","x",
+				"x","x","a","x","b","r","b","x","d","7"," ",
+				"n","h","a","x","b","r","b","x"," "," "," "
+			]
+		]
+
+		//定义英雄的状态
+		let hero={
+			level:1,
+			blood:1000,
+			att:10,
+			def:10,
+			gold:0,
+			exp:0,
+			ykey:1,
+			bkey:1,
+			rkey:1,
+			hindex:104,
+			stairs:1		//第一层
+		}
+		let up = [104,11,111];
+		let low = [1,99,109];
+
+		//定义怪物
+		function monster(name,blood,att,def,gold,exp){
+			this.name = name;
+			this.blood = blood;
+			this.att = att;
+			this.def = def;
+			this.gold = gold;
+			this.exp = exp;
+		}
+		let ms = new Array();
+		ms.push( new monster("绿色史莱姆",70,15,0,1,1) );
+		ms.push( new monster("红色史莱姆",100,15,2,2,2) );
+		ms.push( new monster("小蝙蝠",50,20,0,3,3) );
+		ms.push( new monster("骷髅兵",70,30,5,4,4) );
+		ms.push( new monster("黑色史莱姆",100,30,20,5,5) );
+		ms.push( new monster("初级魔法师",120,40,25,6,6) );
+		ms.push( new monster("持剑骷髅兵",140,50,30,7,7) );
+		ms.push( new monster("大魔法师",200,80,40,8,8) );
+
+
+		//显示数据
+		show();
+
+		function show(){
+			$("#level").html( hero.level );
+			$("#blood").html( hero.blood );
+			$("#attack").html( hero.att );
+			$("#defense").html( hero.def );
+			$("#gold").html( hero.gold );
+			$("#exp").html( hero.exp );
+			$("#ykey").html( hero.ykey );
+			$("#bkey").html( hero.bkey );
+			$("#rkey").html( hero.rkey );
+			$("#stairs").html( hero.stairs );
+
+		}
+
+		//根据层数创建地图
+		createMap( hero.stairs  );
+
+		//怪物动起来
+		let globalIndex = 0;
+		function monsterMove() {
+			$("#game div[class^='m']").each(function(i){
+				$(this).css("background-position",-globalIndex*32+"px " + $(this).css("background-position").split(" ")[1]);
+			})
+			globalIndex++;
+			globalIndex = globalIndex % 4 === 0 ? 0 : globalIndex;
+		}
+
+		//动起来
+		setInterval(monsterMove,200);
+
+
+
+		function createMap( index ){
+			let str='';
+			for(let i=0;i<maps[index-1].length;i++){
+				//类名不能是数字开头，因此要改一下
+				if( parseInt(maps[index-1][i])>=0 && parseInt(maps[index-1][i])<=9 ){
+					str+='<div class="m'+maps[index-1][i]+'"></div>';
+					continue;
+				}
+				str+='<div class="'+maps[index-1][i]+'"></div>';
+			}
+			$("#game").html( str );
+		}
+
+		//键盘事件
+		document.onkeydown=function(event){
+			let code=event.keyCode;
+			if( code===37 ){
+				//左
+				walk(-1);
+			}else if(code===38){
+				//上
+				walk(-11);
+			}else if(code===39){
+				//右
+				walk(1);
+			}else if(code===40){
+				//下
+				walk(11);
+			}else if(code===83){
+				//s
+			}else if(code===65){
+				//a
+			}else if(code===81){
+				//q
+			}else if(code===82){
+				//r
+			}
+		}
+
+		//开门
+		function openDoor(color) {
+			if( color === "yd" &&  hero.ykey > 0 ){
+				hero.ykey--;
+				return true;
+			}
+			if( color === "bd" &&  hero.bkey > 0 ){
+				hero.bkey--;
+				return true;
+			}
+			if( color === "rd" &&  hero.rkey > 0 ){
+				hero.rkey--;
+				return true;
+			}
+			return false;
+		}
+
+		//打架
+		function fight(mIndex) {
+			let msg = "";
+			let m = new monster(ms[mIndex].name,ms[mIndex].blood,ms[mIndex].att,ms[mIndex].def,ms[mIndex].gold,ms[mIndex].exp);
+			let h2m = hero.att - m.def;
+			if( h2m <= 0 ){
+				msg = "勇士砍不动怪物，被怪物乱刀砍死，游戏结束";
+				isGameOver = true;		//游戏结束
+				return msg;
+			}
+			let m2h = m.att - hero.def;
+			if( m2h <= 0 ){
+				//为了避免BUG
+				m2h = 0;
+			}
+
+			//开始打              直到有一方的血量小于0为止
+			do{
+				//勇士先攻击怪物
+				m.blood =  m.blood - h2m ;
+				if(  m.blood <= 0  ){
+					msg = "恭喜胜利，获取" + m.gold + "金币，" + m.exp + "经验";
+					hero.gold +=  m.gold ;
+					hero.exp += m.exp;
+					break;		//怪物死亡，循环结束
+				}
+				//如果没有死亡，怪物要打勇士
+				hero.blood -= m2h;
+				if( hero.blood <= 0 ){
+					msg = "勇士被怪物乱刀砍死，游戏结束";
+					isGameOver = true;
+					break;
+				}
+			}while(  hero.blood >0 && m.blood >0  );
+			return msg;
+		}
+
+		//行走
+		function walk( w ){
+			//先判断有没有超出边界
+			if( hero.hindex + w < 0 || hero.hindex + w >= maps[hero.stairs-1].length ){
+				return;
+			}else if( ( w > 0  && w < 10 &&   (hero.hindex + w) % 11 == 0 ) || (w < 0 && w > -10 && (hero.hindex + w) % 11 == 10 )){
+				return;
+			}
+
+			let val=maps[hero.stairs-1][hero.hindex+w];
+			let msg = "";
+
+			if( val==="x" ){
+				//索引超出，撞到边界，或者撞到墙，不做任何事情
+				return;
+			}else if(val==="a"){
+				hero.att+=3;
+				msg = "勇士捡到红宝石，攻击力 +3 ";
+			}else if(val==="d"){
+				hero.def+=3;
+				msg = "勇士捡到蓝宝石，防御力 +3 ";
+			}else if(val==="r"){
+				hero.blood+=200;
+				msg = "勇士捡到红血瓶，生命 +200 ";
+			}else if(val==="b"){
+				hero.blood+=400;
+				msg = "勇士捡到蓝血瓶，生命 +400 ";
+			}else if(val==="yk" || val==="bk" || val==="rk"){
+				val==="yk" ? hero.ykey+=1:(val==="bk"?hero.bkey+=1:(val==="rk"?hero.rkey+=1:0));
+			}else if(val==="yd" || val==="bd" || val==="rd"){
+				if( !openDoor( val ) ){
+					return;
+				}
+			}else if( val === "p" ){
+				hero.stairs++;
+				hero.hindex = up[hero.stairs - 1];
+				createMap(hero.stairs);
+				return;
+			}else if( val === "n" ){
+				hero.stairs--;
+				hero.hindex = low[hero.stairs - 1];
+				createMap(hero.stairs);
+				return;
+			}else if( val === " " ){
+
+			}else{
+				//打怪
+				let mIndex = val.substring(0,1);
+				msg = fight(mIndex);
+				if(isGameOver){
+					$("#info").html(msg);
+					$("#info").fadeIn("fast","linear");
+					document.onkeydown = null;
+					return;
+				}
+			}
+
+			//更改位置
+			maps[hero.stairs-1][hero.hindex] = " ";
+			maps[hero.stairs-1][hero.hindex+w] =  "h";
+			$("#game .h").get(0).style.backgroundPosition = "";
+			$("#game .h").removeClass("h");		//去掉之前的内容
+			$("#game div").eq(hero.hindex+w).get(0).className = "h";	//设置为勇士
+			hero.hindex = hero.hindex + w;
+
+			//显示信息
+			if( msg != "" ){
+				$("#info").html(msg);
+				$("#info").fadeIn("fast","linear");
+				$("#info").fadeOut("fast","linear");
+			}
+
+
+			//更新数据
+			show();
+
+			//更改朝向
+			changeBackground(w);
+		}
+
+		function changeBackground( w ){
+			//判断朝向
+			if( temp == w ){
+				//同一方向
+				bIndex++;
+				if( bIndex % 4 == 0 ){
+					bIndex = 0;
+				}
+			}else{
+				//不同方向
+				temp = w;	//记录当前方向
+				bIndex = 0;
+			}
+			//设置背景图片
+			let bLow = 2;
+			if( temp == 11 ){
+				bLow = 0;
+			}else if( temp == -11 ){
+				bLow = 3;
+			}else if( temp == -1 ){
+				bLow = 1;
+			}
+			document.querySelector(".h").style.backgroundPosition = (-32 * bIndex) + "px " + (-32 * (bLow)) + "px";
+		}
+	</script>
+</body>
+</html>
